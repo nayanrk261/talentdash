@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { formatSalary, computeMedian } from '@/lib/utils';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function HomePage() {
   // Fetch stats from DB

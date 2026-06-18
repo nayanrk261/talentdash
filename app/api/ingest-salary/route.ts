@@ -123,6 +123,10 @@ function validateFields(body: Record<string, unknown>) {
     }
   }
 
+  if (String(body.company_name).length > 100 || String(body.role).length > 100 || String(body.location).length > 100) {
+    return { error: true, message: 'company_name, role, and location must be 100 characters or less' };
+  }
+
   if (!VALID_LEVELS.includes(body.level as Level)) {
     return { error: true, field: 'level', message: `Invalid level. Must be one of: ${VALID_LEVELS.join(', ')}` };
   }
