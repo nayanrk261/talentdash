@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { PAGINATION } from '@/lib/config';
-import { Prisma } from '@prisma/client';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Build where clause
-    const where: Prisma.SalaryWhereInput = {};
+    const where: Record<string, any> = {};
 
     if (company) {
       where.company = {
@@ -37,9 +37,9 @@ export async function GET(request: NextRequest) {
     if (levelParam) {
       const levels = levelParam.split(',').filter(Boolean);
       if (levels.length === 1) {
-        where.level = levels[0] as Prisma.EnumLevelFilter['equals'];
+        where.level = levels[0];
       } else if (levels.length > 1) {
-        where.level = { in: levels as Prisma.EnumLevelFilter['in'] };
+        where.level = { in: levels };
       }
     }
 
@@ -48,11 +48,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (currency) {
-      where.currency = currency as Prisma.EnumCurrencyFilter['equals'];
+      where.currency = currency;
     }
 
     // Sort
-    let orderBy: Prisma.SalaryOrderByWithRelationInput = {};
+    let orderBy: Record<string, any> = {};
     switch (sort) {
       case 'total_comp_asc':
         orderBy = { total_compensation: 'asc' };
