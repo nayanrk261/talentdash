@@ -1,11 +1,9 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { normalizeCompanyName, generateSlug } from '@/lib/utils';
-import { Level, Currency, Source } from '@prisma/client';
-
-const VALID_LEVELS = Object.values(Level);
-const VALID_CURRENCIES = Object.values(Currency);
-const VALID_SOURCES = Object.values(Source);
+const VALID_LEVELS = ['L3','L4','L5','L6','SDE_I','SDE_II','SDE_III','STAFF','PRINCIPAL','IC4','IC5'];
+const VALID_CURRENCIES = ['INR','USD','GBP','EUR'];
+const VALID_SOURCES = ['CONTRIBUTOR','SCRAPED','AI_INFERRED'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -127,15 +125,15 @@ function validateFields(body: Record<string, unknown>) {
     return { error: true, message: 'company_name, role, and location must be 100 characters or less' };
   }
 
-  if (!VALID_LEVELS.includes(body.level as Level)) {
+  if (!VALID_LEVELS.includes(body.level as string)) {
     return { error: true, field: 'level', message: `Invalid level. Must be one of: ${VALID_LEVELS.join(', ')}` };
   }
 
-  if (!VALID_CURRENCIES.includes(body.currency as Currency)) {
+  if (!VALID_CURRENCIES.includes(body.currency as string)) {
     return { error: true, field: 'currency', message: `Invalid currency. Must be one of: ${VALID_CURRENCIES.join(', ')}` };
   }
 
-  if (!VALID_SOURCES.includes(body.source as Source)) {
+  if (!VALID_SOURCES.includes(body.source as string)) {
     return { error: true, field: 'source', message: `Invalid source. Must be one of: ${VALID_SOURCES.join(', ')}` };
   }
 
