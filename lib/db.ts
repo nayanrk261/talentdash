@@ -1,4 +1,3 @@
-import { neon } from '@neondatabase/serverless';
 import { PrismaNeonHttp } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
 
@@ -8,7 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
   const connectionString = (process.env.DATABASE_URL || '').replace(/^"|"$/g, '');
-  const adapter = new PrismaNeonHttp(connectionString, {} as any);
+  const adapter = new PrismaNeonHttp(connectionString, {});
   return new PrismaClient({ adapter });
 }
 

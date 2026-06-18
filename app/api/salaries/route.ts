@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { PAGINATION } from '@/lib/config';
+import { Prisma } from '@prisma/client';
 
 
 export const dynamic = 'force-dynamic';
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Build where clause
-    const where: Record<string, any> = {};
+    const where: Record<string, unknown> = {};
 
     if (company) {
       where.company = {
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Sort
-    let orderBy: Record<string, any> = {};
+    let orderBy: Record<string, unknown> = {};
     switch (sort) {
       case 'total_comp_asc':
         orderBy = { total_compensation: 'asc' };
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
 
     const [salaries, total] = await Promise.all([
       prisma.salary.findMany({
-        where,
+        where: where as unknown as Prisma.SalaryWhereInput,
         include: {
           company: {
             select: {
@@ -83,11 +84,11 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        orderBy,
+        orderBy: orderBy as unknown as Prisma.SalaryOrderByWithRelationInput,
         skip,
         take: limit,
       }),
-      prisma.salary.count({ where }),
+      prisma.salary.count({ where: where as unknown as Prisma.SalaryWhereInput }),
     ]);
 
     const totalPages = Math.ceil(total / limit);

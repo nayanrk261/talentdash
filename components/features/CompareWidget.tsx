@@ -55,7 +55,9 @@ export function CompareWidget({ allSalaries }: CompareWidgetProps) {
   // Sync URL and fetch on mount
   useEffect(() => {
     if (s1 && s2) {
-      fetchComparison(s1, s2);
+      Promise.resolve().then(() => {
+        fetchComparison(s1, s2);
+      });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

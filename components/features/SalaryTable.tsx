@@ -54,7 +54,6 @@ export function SalaryTable({
             {salaries.map((salary, index) => {
               const currency = displayCurrency || salary.currency;
               const base = Number(salary.base_salary);
-              const bonus = Number(salary.bonus);
               const stock = Number(salary.stock);
               const tc = Number(salary.total_compensation);
 
