@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { normalizeCompanyName, generateSlug } from '@/lib/utils';
-import { Level, Currency, Source } from '@/app/generated/prisma/enums';
+import { Level, Currency, Source } from '@prisma/client';
 
 const VALID_LEVELS = Object.values(Level);
 const VALID_CURRENCIES = Object.values(Currency);

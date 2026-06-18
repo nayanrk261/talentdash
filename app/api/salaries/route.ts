@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { PAGINATION } from '@/lib/config';
-import { Prisma } from '@/app/generated/prisma/client';
+import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
