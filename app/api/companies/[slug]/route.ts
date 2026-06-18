@@ -27,7 +27,7 @@ export async function GET(
     }
 
     // Compute median total compensation (true statistical median)
-    const tcValues = company.salaries.map((s) => Number(s.total_compensation));
+    const tcValues = company.salaries.map((s: { total_compensation: bigint | number }) => Number(s.total_compensation));
     const medianTc = computeMedian(tcValues);
 
     // Level distribution
