@@ -242,40 +242,24 @@ Compare two salary records with computed deltas.
 
 ---
 
-## 🏛 Architecture Decisions
+## Architecture Decisions
 
-### Why Static (SSG + ISR) vs Dynamic per page type
+### Rendering Strategy
+- Homepage: ISR (revalidate: 3600) — trending data changes daily
+- Company pages /companies/[slug]: Static with generateStaticParams() querying real Neon DB at build time
+- Salary table /salaries: ISR for fast, SEO-friendly delivery
+- Compare page /compare: Client component — user-specific selections, cannot be prebuilt
 
-- **Home page (SSG + ISR 300s)**: Stats change infrequently, caching gives instant load. Revalidates every 5 minutes to pick up new data.
-- **Company pages (SSG + ISR 3600s)**: Company data is relatively stable. `generateStaticParams` pre-builds all known company pages at build time. New companies are generated on-demand and cached for 1 hour.
-- **Salaries page (Client)**: Interactive filtering with debounced search, multi-select, and currency conversion requires client-side state. Data is fetched via the `/api/salaries` endpoint.
-- **Compare page (Client)**: Two-way dropdown selection with URL state sync is inherently interactive.
-- **API routes (Dynamic)**: Must handle real-time queries, writes, and unique parameters.
+### Pagination
+Chose page-based over cursor-based pagination because salary data sorts by total_compensation (a stable field, not chronological). Page-based allows simple, shareable filter URLs like /salaries?page=2.
 
-### Why page-based pagination
-
-- **Simplicity**: Cursor-based pagination adds complexity for minimal benefit given our dataset size (<10K records).
-- **URL shareability**: Page numbers are intuitive and URL-encodable (`?page=3`).
-- **SEO-friendly**: Search engines can crawl paginated content.
-- **Trade-off**: For datasets > 100K records, cursor-based would be more performant.
-
-### What would be built differently with more time
-
-1. **Full-text search** with PostgreSQL `tsvector` for better company/role search.
-2. **Cursor-based pagination** for the API to handle scale.
-3. **Redis caching** layer between API and database.
-4. **Authentication** for salary submission with email verification.
-5. **Salary trends** — time-series visualization showing TC changes over time.
-6. **PDF export** of comparison results.
-7. **Dark mode** toggle.
-8. **Rate limiting** on the ingest endpoint.
+### What I would build differently with more time
+Full-text search via PostgreSQL tsvector, granular SEO pages per role+location combination, salary submission form for CONTRIBUTOR-sourced data.
 
 ### What was cut and why
-
-- **Admin dashboard**: Spec mentioned "no SSR except admin" but admin was not specified in detail. Cut for scope.
-- **Chart library**: Level distribution uses pure CSS stacked bars instead of D3/Chart.js to avoid bundle size.
-- **Company logos**: Using text-only company names. Could add `next/image` with logo assets.
-- **Email notifications**: No notification system for new salary submissions.
+- Authentication — explicitly out of scope per task brief
+- Reviews/Interviews pages — scope too large for 72 hours, focused on core salary intelligence
+- Typesense search — PostgreSQL ILIKE sufficient at current data scale
 
 ---
 
